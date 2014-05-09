@@ -33,12 +33,16 @@ class QuestionsController < ApplicationController
   end
 
   def question_4
-    # Which actor has been in the most movies on the list?
-    # (If there's a tie, any one of them is fine)
+    @actor_list = Actor.all
+    @the_actor = Actor.first
 
-    # Your Ruby goes here.
+    @actor_list.each do |actor|
+      if actor.movies.count > @the_actor.movies.count
+        @the_actor = actor
+      end
+    end
 
-    # @actor_with_the_most_movies = ???
+    @actor_with_the_most_movies = @the_actor.name
   end
 
   def question_5
