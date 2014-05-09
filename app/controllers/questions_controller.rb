@@ -46,15 +46,51 @@ class QuestionsController < ApplicationController
   end
 
   def question_5
-    # This one is hard. Work on it after all your other review is complete.
-
     # Which actor/director pair has the most movies on the list?
     # (If there's a tie, any pair of them is fine)
 
-    # Your Ruby goes here.
 
-    # @actor = ???
-    # @director = ???
-    # @movies_together = ???
+
+    @most_collaborations = []
+
+    Actor.all.each do |actor|
+      @actor_grouped_movies = actor.movies.group_by { |movie| movie.director_id }
+      @actor_most_collaborations = @actor_grouped_movies.max_by { |director_id, movies| movies.count }
+      @most_collaborations << @actor_most_collaborations
+    end
+
+
+
+    @the_most = []
+
+    @most_collaborations.each do |list_of_collaborations|
+      @collaboration_count = list_of_collaborations[1].count
+      @the_most << @collaboration_count
+    end
+
+    @count_most_collaborations = @the_most.sort.last
+
+
+
+    @collaboration_movies_array = []
+
+    @most_collaborations.each do |list_of_collaborations|
+      @collaboration_count = list_of_collaborations[1].count
+      if @collaboration_count == @count_most_collaborations
+        @collaboration_movies_array << list_of_collaborations
+      end
+    end
+
+    @first_collaboration = @collaboration_movies_array[0][1][0]
+
+    @the_final_director = Director.find_by({ :id => @first_collaboration.director_id})
+
+    @the_final_role = Role.find_by({ :movie_id => @first_collaboration.id })
+
+    @the_final_actor = Actor.find_by({ :id => @the_final_role.actor_id })
+
+    @actor = @the_final_actor.name
+    @director = @the_final_director.name
+    @movies_together = @collaboration_movies_array[0][1]
   end
 end
