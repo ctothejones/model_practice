@@ -2,25 +2,34 @@ class QuestionsController < ApplicationController
   def question_1
     # What is the most recent movie on the list that the second actor appeared in?
 
-    # Your Ruby goes here.
+    @the_actor = Actor.second.movies
+    @ordered_movies = @the_actor.order("year DESC")
 
-    # @most_recent_movie_for_second_actor = ???
+    @most_recent_movie_for_second_actor = @ordered_movies.first.title
   end
 
   def question_2
     # Who directed the longest movie on the list?
 
-    # Your Ruby goes here.
+    @movies_ordered_by_duration = Movie.order("duration DESC")
+    @the_director = @movies_ordered_by_duration.first.director
 
-    # @director_of_longest_movie = ???
+    @director_of_longest_movie = @the_director.name
   end
 
   def question_3
     # Which director has the most movies on the list?
 
-    # Your Ruby goes here.
+    @director_list = Director.all
+    @the_director = Director.first
 
-    # @director_with_the_most_movies = ???
+    @director_list.each do |director|
+      if director.movies.count > @the_director.movies.count
+        @the_director = director
+      end
+    end
+
+    @director_with_the_most_movies = @the_director.name
   end
 
   def question_4
