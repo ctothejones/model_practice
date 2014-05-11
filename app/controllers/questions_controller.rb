@@ -49,8 +49,6 @@ class QuestionsController < ApplicationController
     # Which actor/director pair has the most movies on the list?
     # (If there's a tie, any pair of them is fine)
 
-
-
     @most_collaborations = []
 
     Actor.all.each do |actor|
@@ -58,7 +56,6 @@ class QuestionsController < ApplicationController
       @actor_most_collaborations = @actor_grouped_movies.max_by { |director_id, movies| movies.count }
       @most_collaborations << @actor_most_collaborations
     end
-
 
 
     @the_most = []
@@ -71,7 +68,6 @@ class QuestionsController < ApplicationController
     @count_most_collaborations = @the_most.sort.last
 
 
-
     @collaboration_movies_array = []
 
     @most_collaborations.each do |list_of_collaborations|
@@ -81,16 +77,22 @@ class QuestionsController < ApplicationController
       end
     end
 
+    @movies_together = @collaboration_movies_array[0][1]
     @first_collaboration = @collaboration_movies_array[0][1][0]
 
     @the_final_director = Director.find_by({ :id => @first_collaboration.director_id})
+    @director = @the_final_director.name
 
-    @the_final_role = Role.find_by({ :movie_id => @first_collaboration.id })
+    @most_times_worked_with_the_director = 0
 
-    @the_final_actor = Actor.find_by({ :id => @the_final_role.actor_id })
+    Actor.all.each do |actor|
+      @times_worked_with_the_director = actor.movies.where({ :director_id => @the_final_director.id }).count
+      if @times_worked_with_the_director > @most_times_worked_with_the_director
+        @most_times_worked_with_the_director = @times_worked_with_the_director
+        @the_final_actor = actor
+      end
+    end
 
     @actor = @the_final_actor.name
-    @director = @the_final_director.name
-    @movies_together = @collaboration_movies_array[0][1]
   end
 end
